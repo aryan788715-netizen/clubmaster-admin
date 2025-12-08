@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClubMaster Pro - Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #8b5cf6;
+            --primary-dark: #7c3aed;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Login */
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-card {
+            background: white;
+            padding: 50px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            width: 100%;
+            max-width: 450px;
+            animation: fadeIn 0.6s;
+        }
+
+        .logo {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            margin: 0 auto 28px;
+        }
+
+        .login-title {
+            font-size: 34px;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 36px;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary { 
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            box-shadow: 0 4px 15px 0 rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-success { background: var(--success); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-secondary { background: #64748b; color: white; }
+        .btn-warning { background: var(--warning); color: white; }
+
+        .demo-accounts {
+            margin-top: 28px;
+            padding: 20px;
+            background: var(--light);
+            border-radius: 14px;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+        }
+
+        .dashboard.active {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid var(--border);
+            padding: 28px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-header {
+            padding: 0 28px 28px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .sidebar-logo-icon {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 26px;
+        }
+
+        .sidebar-logo-text h2 {
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+        .sidebar-logo-text p {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .nav-section {
+            padding: 28px 0;
+        }
+
+        .nav-section-title {
+            padding: 0 28px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .nav-item {
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 15px;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--primary);
+            transform: scaleY(0);
+            transition: transform 0.3s;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(139, 92, 246, 0.08);
+            color: var(--primary);
+        }
+
+        .nav-item.active::before {
+            transform: scaleY(1);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 36px;
+            width: calc(100% - 280px);
+            min-height: 100vh;
+        }
+
+        .topbar {
+            background: white;
+            padding: 24px 36px;
+            border-radius: 18px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar h1 {
+            font-size: 30px;
+            font-weight: 900;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 18px 10px 10px;
+            background: var(--light);
+            border-radius: 14px;
+        }
+
+        .user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .user-info h4 {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .user-info p {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 28px;
+            margin-bottom: 36px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 32px;
+            border-radius: 18px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 18px;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .stat-icon.primary { background: rgba(139, 92, 246, 0.1); }
+        .stat-icon.success { background: rgba(16, 185, 129, 0.1); }
+        .stat-icon.warning { background: rgba(245, 158, 11, 0.1); }
+        .stat-icon.danger { background: rgba(239, 68, 68, 0.1); }
+
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 38px;
+            font-weight: 900;
+            color: var(--dark);
+        }
+
+        /* Card */
+        .card {
+            background: white;
+            padding: 32px;
+            border-radius: 18px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 36px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .btn-sm {
+            padding: 12px 24px;
+            font-size: 14px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .btn-icon {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        thead {
+            background: var(--light);
+        }
+
+        th {
+            text-align: left;
+            padding: 18px;
+            font-weight: 800;
+            font-size: 13px;
+            text-transform: uppercase;
+            color: #64748b;
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 22px 18px;
+            border-bottom: 1px solid var(--border);
+            font-size: 15px;
+        }
+
+        tr:hover td {
+            background: rgba(139, 92, 246, 0.02);
+        }
+
+        .badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .badge-success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .badge-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .badge-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .badge-info { background: rgba(59, 130, 246, 0.1); color: var(--info); }
+        .badge-primary { background: rgba(139, 92, 246, 0.1); color: var(--primary); }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(6px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: white;
+            border-radius: 22px;
+            padding: 40px;
+            max-width: 650px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        }
+
+        .modal-header {
+            margin-bottom: 32px;
+        }
+
+        .modal-title {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .modal-subtitle {
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 14px;
+            margin-top: 32px;
+        }
+
+        .modal-footer .btn { flex: 1; }
+
+        /* Alert */
+        .alert {
+            padding: 18px 24px;
+            border-radius: 14px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-weight: 600;
+        }
+
+        .alert-success { 
+            background: rgba(16, 185, 129, 0.1); 
+            color: var(--success);
+            border-left: 4px solid var(--success);
+        }
+
+        .alert-error { 
+            background: rgba(239, 68, 68, 0.1); 
+            color: var(--danger);
+            border-left: 4px solid var(--danger);
+        }
+
+        .alert-info { 
+            background: rgba(59, 130, 246, 0.1); 
+            color: var(--info);
+            border-left: 4px solid var(--info);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 100px 24px;
+            color: #64748b;
+        }
+
+        .empty-icon {
+            font-size: 100px;
+            margin-bottom: 24px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--dark);
+        }
+
+        .empty-text {
+            font-size: 16px;
+        }
+
+        /* Page Content */
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        /* Toggle */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 56px;
+            height: 30px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.4s;
+            border-radius: 30px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-page">
+        <div class="login-card">
+            <div class="logo">👨‍💼</div>
+            <h1 class="login-title">ClubMaster Pro</h1>
+            <p class="login-subtitle">Admin Control Panel</p>
+            <div id="loginAlert"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-input" id="loginEmail" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" id="loginPassword" required placeholder="Enter your password">
+                </div>
+                <button type="submit" class="btn btn-primary">Sign In</button>
+            </form>
+            <div class="demo-accounts">
+                <strong>Demo Account:</strong><br>
+                <strong>Email:</strong> admin@club.com<br>
+                <strong>Password:</strong> admin123
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <div class="sidebar-logo-icon">👨‍💼</div>
+                    <div class="sidebar-logo-text">
+                        <h2>ClubMaster</h2>
+                        <p>Admin Panel</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="nav-section">
+                <div class="nav-section-title">Main</div>
+                <div class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item" data-page="events">
+                    <span class="nav-icon">🎉</span>
+                    <span>Manage Events</span>
+                </div>
+                <div class="nav-item" data-page="bookings">
+                    <span class="nav-icon">📅</span>
+                    <span>Bookings</span>
+                </div>
+                <div class="nav-item" data-page="users">
+                    <span class="nav-icon">👥</span>
+                    <span>Users</span>
+                </div>
+                <div class="nav-item" data-page="notifications">
+                    <span class="nav-icon">📢</span>
+                    <span>Send Notification</span>
+                </div>
+            </nav>
+            <nav class="nav-section">
+                <div class="nav-section-title">Account</div>
+                <div class="nav-item" onclick="logout()">
+                    <span class="nav-icon">🚪</span>
+                    <span>Logout</span>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <h1 id="pageTitle">Dashboard</h1>
+                <div class="user-profile">
+                    <div class="user-avatar">A</div>
+                    <div class="user-info">
+                        <h4>Admin User</h4>
+                        <p>Administrator</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Page -->
+            <div id="dashboardPage" class="page-content active">
+                <div class="stats-grid" id="adminStats"></div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Recent Bookings</h2>
+                    </div>
+                    <div id="recentBookings"></div>
+                </div>
+            </div>
+
+            <!-- Events Page -->
+            <div id="eventsPage" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Manage Events</h2>
+                        <button class="btn-sm btn-primary btn-icon" onclick="openAddEventModal()">
+                            <span>➕</span>
+                            <span>Add Event</span>
+                        </button>
+                    </div>
+                    <div id="eventsList"></div>
+                </div>
+            </div>
+
+            <!-- Bookings Page -->
+            <div id="bookingsPage" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">All Bookings</h2>
+                    </div>
+                    <div id="allBookings"></div>
+                </div>
+            </div>
+
+            <!-- Users Page -->
+            <div id="usersPage" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Registered Users</h2>
+                    </div>
+                    <div id="usersList"></div>
+                </div>
+            </div>
+
+            <!-- Notifications Page -->
+            <div id="notificationsPage" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Send Notification</h2>
+                    </div>
+                    <form id="notificationForm">
+                        <div class="form-group">
+                            <label class="form-label">Notification Title</label>
+                            <input type="text" class="form-input" id="notifTitle" required placeholder="Enter title">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Message</label>
+                            <textarea class="form-textarea" id="notifMessage" required placeholder="Enter message"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send to All Users</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Database
+        class AdminDB {
+            getEvents() {
+                return JSON.parse(localStorage.getItem('clubEvents') || '[]');
+            }
+
+            saveEvents(events) {
+                localStorage.setItem('clubEvents', JSON.stringify(events));
+            }
+
+            addEvent(event) {
+                const events = this.getEvents();
+                event.id = Date.now().toString();
+                event.booked = 0;
+                events.push(event);
+                this.saveEvents(events);
+                return event;
+            }
+
+            updateEvent(id, data) {
+                const events = this.getEvents();
+                const index = events.findIndex(e => e.id === id);
+                if (index !== -1) {
+                    events[index] = { ...events[index], ...data };
+                    this.saveEvents(events);
+                }
+            }
+
+            deleteEvent(id) {
+                let events = this.getEvents();
+                events = events.filter(e => e.id !== id);
+                this.saveEvents(events);
+            }
+
+            getBookings() {
+                return JSON.parse(localStorage.getItem('clubBookings') || '[]');
+            }
+
+            getUsers() {
+                return JSON.parse(localStorage.getItem('clubUsers') || '[]');
+            }
+
+            getNotifications() {
+                return JSON.parse(localStorage.getItem('clubNotifications') || '[]');
+            }
+
+            saveNotifications(notifications) {
+                localStorage.setItem('clubNotifications', JSON.stringify(notifications));
+            }
+
+            addNotification(notification) {
+                const notifications = this.getNotifications();
+                notification.id = Date.now().toString();
+                notification.date = new Date().toISOString();
+                notification.read = false;
+                notifications.push(notification);
+                this.saveNotifications(notifications);
+            }
+        }
+
+        const db = new AdminDB();
+        let currentUser = null;
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const alert = document.getElementById('loginAlert');
+
+            if (email === 'admin@club.com' && password === 'admin123') {
+                currentUser = { email, role: 'admin', name: 'Admin User' };
+                alert.innerHTML = '<div class="alert alert-success"><span>✓</span> Login successful!</div>';
+                setTimeout(() => {
+                    document.getElementById('loginPage').style.display = 'none';
+                    document.getElementById('adminDashboard').classList.add('active');
+                    loadAdminDashboard();
+                }, 500);
+            } else {
+                alert.innerHTML = '<div class="alert alert-error"><span>✗</span> Invalid credentials</div>';
+            }
+        });
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('adminDashboard').classList.remove('active');
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        // Load Dashboard
+        function loadAdminDashboard() {
+            const events = db.getEvents();
+            const bookings = db.getBookings();
+            const users = db.getUsers();
+
+            const totalRevenue = bookings.reduce((sum, b) => {
+                const event = events.find(e => e.id === b.eventId);
+                return sum + (event ? event.price * b.guests : 0);
+            }, 0);
+
+            document.getElementById('adminStats').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-label">Total Events</div>
+                            <div class="stat-value">${events.length}</div>
+                        </div>
+                        <div class="stat-icon primary">🎉</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-label">Total Bookings</div>
+                            <div class="stat-value">${bookings.length}</div>
+                        </div>
+                        <div class="stat-icon success">📅</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-label">Total Revenue</div>
+                            <div class="stat-value">₹${(totalRevenue/1000).toFixed(1)}K</div>
+                        </div>
+                        <div class="stat-icon warning">💰</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-label">Total Users</div>
+                            <div class="stat-value">${users.length}</div>
+                        </div>
+                        <div class="stat-icon danger">👥</div>
+                    </div>
+                </div>
+            `;
+
+            renderRecentBookings();
+            renderEvents();
+            renderAllBookings();
+            renderUsers();
+        }
+
+        function renderRecentBookings() {
+            const bookings = db.getBookings().slice(-5).reverse();
+            const events = db.getEvents();
+            const users = db.getUsers();
+            const container = document.getElementById('recentBookings');
+
+            if (bookings.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div><div class="empty-title">No Bookings Yet</div></div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Event</th>
+                            <th>Guests</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${bookings.map(b => {
+                            const event = events.find(e => e.id === b.eventId);
+                            const user = users.find(u => u.id === b.userId);
+                            return `
+                                <tr>
+                                    <td><strong>${user ? user.name : 'Unknown'}</strong></td>
+                                    <td>${event ? event.title : 'Unknown'}</td>
+                                    <td>${b.guests}</td>
+                                    <td><strong>₹${b.totalAmount.toLocaleString()}</strong></td>
+                                    <td><span class="badge badge-success">CONFIRMED</span></td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function renderEvents() {
+            const events = db.getEvents();
+            const container = document.getElementById('eventsList');
+
+            if (events.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">🎉</div><div class="empty-title">No Events</div></div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Price</th>
+                            <th>Capacity</th>
+                            <th>Booked</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${events.map(e => `
+                            <tr>
+                                <td><strong>${e.title}</strong></td>
+                                <td>${new Date(e.date).toLocaleDateString()}</td>
+                                <td>${e.time}</td>
+                                <td>₹${e.price.toLocaleString()}</td>
+                                <td>${e.capacity}</td>
+                                <td><span class="badge badge-info">${e.booked}/${e.capacity}</span></td>
+                                <td>
+                                    <button class="btn-sm btn-primary" onclick="editEvent('${e.id}')">Edit</button>
+                                    <button class="btn-sm btn-danger" onclick="deleteEvent('${e.id}')">Delete</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function renderAllBookings() {
+            const bookings = db.getBookings();
+            const events = db.getEvents();
+            const users = db.getUsers();
+            const container = document.getElementById('allBookings');
+
+            if (bookings.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div><div class="empty-title">No Bookings</div></div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>User</th>
+                            <th>Event</th>
+                            <th>Guests</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${bookings.map(b => {
+                            const event = events.find(e => e.id === b.eventId);
+                            const user = users.find(u => u.id === b.userId);
+                            return `
+                                <tr>
+                                    <td><strong>#${b.id.slice(-6)}</strong></td>
+                                    <td>${user ? user.name : 'Unknown'}</td>
+                                    <td>${event ? event.title : 'Unknown'}</td>
+                                    <td>${b.guests}</td>
+                                    <td><strong>₹${b.totalAmount.toLocaleString()}</strong></td>
+                                    <td>${new Date(b.bookingDate).toLocaleDateString()}</td>
+                                    <td><span class="badge badge-success">CONFIRMED</span></td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function renderUsers() {
+            const users = db.getUsers();
+            const bookings = db.getBookings();
+            const container = document.getElementById('usersList');
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Bookings</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${users.map(u => {
+                            const userBookings = bookings.filter(b => b.userId === u.id);
+                            return `
+                                <tr>
+                                    <td><strong>${u.name}</strong></td>
+                                    <td>${u.email}</td>
+                                    <td>${u.phone || 'N/A'}</td>
+                                    <td><span class="badge badge-primary">${userBookings.length}</span></td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // Add Event Modal
+        function openAddEventModal() {
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Add New Event</h3>
+                        <p class="modal-subtitle">Create a new event</p>
+                    </div>
+                    <form id="addEventForm">
+                        <div class="form-group">
+                            <label class="form-label">Event Title</label>
+                            <input type="text" class="form-input" id="eventTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-textarea" id="eventDescription" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-input" id="eventDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Time</label>
+                            <input type="time" class="form-input" id="eventTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Price (₹)</label>
+                            <input type="number" class="form-input" id="eventPrice" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Capacity</label>
+                            <input type="number" class="form-input" id="eventCapacity" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Venue</label>
+                            <input type="text" class="form-input" id="eventVenue" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Icon Emoji</label>
+                            <input type="text" class="form-input" id="eventImage" value="🎉" required>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Create Event</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            document.getElementById('addEventForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                db.addEvent({
+                    title: document.getElementById('eventTitle').value,
+                    description: document.getElementById('eventDescription').value,
+                    date: document.getElementById('eventDate').value,
+                    time: document.getElementById('eventTime').value,
+                    price: parseFloat(document.getElementById('eventPrice').value),
+                    capacity: parseInt(document.getElementById('eventCapacity').value),
+                    venue: document.getElementById('eventVenue').value,
+                    image: document.getElementById('eventImage').value
+                });
+                modal.remove();
+                loadAdminDashboard();
+            });
+        }
+
+        function editEvent(id) {
+            const event = db.getEvents().find(e => e.id === id);
+            if (!event) return;
+
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Edit Event</h3>
+                    </div>
+                    <form id="editEventForm">
+                        <div class="form-group">
+                            <label class="form-label">Event Title</label>
+                            <input type="text" class="form-input" value="${event.title}" id="editTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-textarea" id="editDescription" required>${event.description}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Price (₹)</label>
+                            <input type="number" class="form-input" value="${event.price}" id="editPrice" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Capacity</label>
+                            <input type="number" class="form-input" value="${event.capacity}" id="editCapacity" required>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            document.getElementById('editEventForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                db.updateEvent(id, {
+                    title: document.getElementById('editTitle').value,
+                    description: document.getElementById('editDescription').value,
+                    price: parseFloat(document.getElementById('editPrice').value),
+                    capacity: parseInt(document.getElementById('editCapacity').value)
+                });
+                modal.remove();
+                loadAdminDashboard();
+            });
+        }
+
+        function deleteEvent(id) {
+            if (confirm('Delete this event?')) {
+                db.deleteEvent(id);
+                loadAdminDashboard();
+            }
+        }
+
+        // Send Notification
+        document.getElementById('notificationForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            db.addNotification({
+                title: document.getElementById('notifTitle').value,
+                message: document.getElementById('notifMessage').value
+            });
+            alert('Notification sent to all users!');
+            document.getElementById('notificationForm').reset();
+        });
+
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const page = this.getAttribute('data-page');
+                if (!page) return;
+
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+
+                document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+                document.getElementById(page + 'Page').classList.add('active');
+
+                const titles = {
+                    'dashboard': 'Dashboard',
+                    'events': 'Manage Events',
+                    'bookings': 'All Bookings',
+                    'users': 'Registered Users',
+                    'notifications': 'Send Notification'
+                };
+
+                document.getElementById('pageTitle').textContent = titles[page] || 'Dashboard';
+            });
+        });
+    </script>
+</body>
+</html>
