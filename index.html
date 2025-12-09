@@ -15,6 +15,52 @@
             line-height: 1.6;
         }
 
+        /* Maintenance Mode Screen */
+        .maintenance-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .maintenance-screen.active {
+            display: flex;
+        }
+
+        .maintenance-icon {
+            font-size: 120px;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .maintenance-title {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 20px;
+        }
+
+        .maintenance-message {
+            font-size: 20px;
+            max-width: 600px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
         /* Login Page */
         .login-page {
             min-height: 100vh;
@@ -147,6 +193,12 @@
             background: rgba(239, 68, 68, 0.1); 
             color: #ef4444;
             border-left: 4px solid #ef4444;
+        }
+
+        .alert-warning { 
+            background: rgba(245, 158, 11, 0.1); 
+            color: #f59e0b;
+            border-left: 4px solid #f59e0b;
         }
 
         /* Dashboard */
@@ -433,6 +485,13 @@
     </style>
 </head>
 <body>
+    <!-- Maintenance Mode Screen -->
+    <div id="maintenanceScreen" class="maintenance-screen">
+        <div class="maintenance-icon">🔧</div>
+        <h1 class="maintenance-title">Under Maintenance</h1>
+        <p class="maintenance-message" id="maintenanceMessage">We're currently performing scheduled maintenance. We'll be back soon!</p>
+    </div>
+
     <div id="loginPage" class="login-page">
         <div class="login-card">
             <div class="logo">👨‍💼</div>
@@ -576,11 +635,35 @@
     <script>
         const db = {
             get: (key) => JSON.parse(localStorage.getItem(key) || '[]'),
-            set: (key, val) => localStorage.setItem(key, JSON.stringify(val))
+            set: (key, val) => localStorage.setItem(key, JSON.stringify(val)),
+            getObj: (key) => JSON.parse(localStorage.getItem(key) || '{}')
         };
+
+        // Check maintenance mode on load
+        window.addEventListener('DOMContentLoaded', () => {
+            checkMaintenanceMode();
+        });
+
+        function checkMaintenanceMode() {
+            const settings = db.getObj('clubSettings');
+            if (settings.maintenanceMode) {
+                document.getElementById('maintenanceMessage').textContent = settings.maintenanceMessage || "We're currently performing scheduled maintenance. We'll be back soon!";
+                document.getElementById('maintenanceScreen').classList.add('active');
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('adminDashboard').classList.remove('active');
+            }
+        }
 
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
+            
+            // Check maintenance mode before login
+            const settings = db.getObj('clubSettings');
+            if (settings.maintenanceMode) {
+                document.getElementById('loginAlert').innerHTML = '<div class="alert alert-warning">⚠️ System is under maintenance. Only owner can login.</div>';
+                return;
+            }
+
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPassword').value;
             
@@ -871,6 +954,9 @@
             };
             document.getElementById('pageTitle').textContent = titles[page];
         }
+
+        // Check maintenance mode periodically
+        setInterval(checkMaintenanceMode, 3000);
     </script>
 </body>
 </html>
